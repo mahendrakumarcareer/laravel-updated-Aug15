@@ -34,17 +34,10 @@ COPY ./000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Copying Created custom configuration to php configuration.
 COPY ./php.conf /usr/local/apache2/conf/extra/php.conf
 
-COPY . /var/www/html/
+COPY . .
 
 EXPOSE 80
 
 #RUN service apache2 restart
 #Start apache2 service in forground
 CMD ["apache2ctl", "-D", "FOREGROUND"]
-
-# Before start serving your application - clear all kinds of cache at once.
-# php artisan migrate
-#ONBUILD chown -R www-data:www-data .
-#RUN php artisan optimize && php artisan config:cache \
-#    && php artisan view:cache && php artisan view:clear \
-#    && php artisan route:clear && php artisan clear-compiled
