@@ -34,7 +34,7 @@ COPY ./000-default.conf /etc/apache2/sites-enabled/000-default.conf
 #Copying Created custom configuration to php configuration.
 COPY ./php.conf /usr/local/apache2/conf/extra/php.conf
 
-COPY . /var/www/html/
+#COPY . /var/www/html/
 
 EXPOSE 80
 
