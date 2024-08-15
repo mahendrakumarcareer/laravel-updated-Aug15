@@ -8,7 +8,7 @@ phases:
       - aws --version
       - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 455415553703.dkr.ecr.us-west-2.amazonaws.com
       - REPOSITORY URI=455415553703.dkr.ecr.us-west-2.amazonaws.com/laravel-base-image-aug14:latest
-      -IMAGE_TAG=latest    
+      - IMAGE_TAG=latest    
   build:
     commands:
       - echo Build started on `date`
