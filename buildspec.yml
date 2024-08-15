@@ -1,34 +1,24 @@
-version: '3'
-services:
-    app:
-        build: .
-        image: Laravel-App:latest
-#        volumes:
-#            - .:/var/www
-#            - ./public:/var/www/html
-        ports:
-            - 8080:80
-    cron:
-        image: Laravel-App:latest
-#        volumes:
-#            - .:/var/www
-#            - ./public:/var/www/html
-        command: ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
-        environment:
-            - SUPER_CMD=/usr/bin/entrypoint.sh
-#    worker1:
-#        image: laravel-app:latest
-##        volumes:
-##            - .:/var/www
-##            - ./public:/var/www/html
-#        command: ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
-#        environment:
-#            - SUPER_CMD=php /var/www/artisan queue:work --queue=worker1 --sleep=5 --tries=1 --daemon
-#    worker2:
-#        image: laravel-app:latest
-#        #        volumes:
-#        #            - .:/var/www
-#        #            - ./public:/var/www/html
-#        command: ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
-#        environment:
-#        - SUPER_CMD=php /var/www/artisan queue:work --queue=worker2 --sleep=5 --tries=1 --daemon
+phases:
+  install:
+    runtime-versions:
+      docker: Docker version 27.1.1
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 455415553703.dkr.ecr.us-west-2.amazonaws.com
+      - REPOSITORY URI=455415553703.dkr.ecr.us-west-2.amazonaws.com/laravel-base-image-aug14:latest
+      -IMAGE_TAG=latest    
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - printf '[{"name":"laravel-base-image-aug14","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > finaloutput.json
+artifacts:
+    files: finaloutput.json
