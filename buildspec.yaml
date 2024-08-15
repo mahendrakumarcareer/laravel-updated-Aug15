@@ -1,11 +1,9 @@
 version: 0.2
 
 phases:
-#  install:
-#    commands:
-#      - echo Installing Docker...
-#      - apt-get update -y
-#      - apt-get install -y docker
+   install:
+    runtime-versions:
+      docker: 27
 
   pre_build:
     commands:
